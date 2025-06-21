@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Register</title>
+  <style>
+    body {
+      background-color: #0d1b2a;
+      color: #ffffff;
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      text-align: center;
+    }
+    input, button {
+      padding: 0.7rem;
+      margin: 0.5rem;
+      width: 80%;
+      max-width: 400px;
+      border: none;
+      border-radius: 5px;
+    }
+    input {
+      background-color: #1b263b;
+      color: #ffffff;
+    }
+    button {
+      background-color: #00b4d8;
+      color: #0d1b2a;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .form-box {
+      background-color: #112d4e;
+      padding: 2rem;
+      border-radius: 10px;
+      display: inline-block;
+    }
+    a {
+      color: #00b4d8;
+      display: block;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>📝 Student Registration</h2>
+  <div class="form-box">
+    <form method="POST">
+      <input type="text" name="username" placeholder="Username" required><br/>
+      <input type="password" name="password" placeholder="Password" required><br/>
+      <button type="submit">Register</button>
+    </form>
+    <a href="/login">Already have an account? Login</a>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Ocean Research & Exploration Portal</title>
+  <style>
+    body {
+      background: url('/static/images/ocean_bg.jpg') no-repeat center center fixed;
+      background-size: cover;
+      font-family: Arial, sans-serif;
+      color: #ffffff;
+      margin: 0;
+      padding: 0;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(13, 27, 42, 0.15);
+      z-index: -1;
+    }
+    a {
+      color: #00b4d8;
+      text-decoration: none;
+    }
+    a.button {
+      display: block;
+      margin: 1rem auto;
+      padding: 0.7rem 1.5rem;
+      border: 1px solid #00b4d8;
+      border-radius: 8px;
+      background-color: rgba(30, 42, 56, 0.35);
+      text-align: center;
+      width: 80%;
+    }
+    a.button:hover {
+      background-color: #00b4d8;
+      color: #0d1b2a;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+    }
+    @media (min-width: 768px) {
+      .container {
+        flex-direction: row;
+        height: 100vh;
+      }
+    }
+    .sidebar, .rightbar {
+      width: 100%;
+      background-color: rgba(27, 38, 59, 0.35);
+      padding: 1rem;
+    }
+    @media (min-width: 768px) {
+      .sidebar, .rightbar {
+        width: 20%;
+      }
+    }
+    .main {
+      width: 100%;
+      padding: 2rem;
+      background-color: rgba(15, 44, 66, 0.35);
+      overflow-y: auto;
+    }
+    @media (min-width: 768px) {
+      .main {
+        width: 60%;
+      }
+    }
+    .section {
+      margin-bottom: 3rem;
+      padding: 1.5rem;
+      background-color: rgba(30, 42, 56, 0.35);
+      border-radius: 10px;
+    }
+    .section h2 {
+      color: #00b4d8;
+    }
+    .card {
+      background-color: rgba(36, 59, 85, 0.35);
+      border-left: 5px solid #00b4d8;
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 8px;
+      text-align: left;
+    }
+    iframe {
+      width: 100%;
+      height: 400px;
+      border-radius: 10px;
+      border: 2px solid #00b4d8;
+    }
+    h1 {
+      text-align: center;
+      color: #00ffff;
+      background: rgba(17, 45, 78, 0.35);
+      padding: 1rem;
+      margin: 0;
+      animation: wave 3s ease-in-out infinite alternate;
+    }
+    @keyframes wave {
+      from { letter-spacing: 0px; }
+      to { letter-spacing: 2px; }
+    }
+    .subheading {
+      text-align: center;
+      background-color: rgba(17, 45, 78, 0.35);
+      color: #cccccc;
+      font-size: 0.95rem;
+      padding: 0.5rem;
+      margin: 0;
+    }
+    .managed-by {
+      text-align: center;
+      background-color: rgba(17, 45, 78, 0.35);
+      color: #bbbbbb;
+      font-size: 0.85rem;
+      padding: 0.3rem;
+      margin: 0;
+    }
+    .photo-credit {
+      text-align: center;
+      font-size: 0.75rem;
+      color: #cccccc;
+      margin-top: 1rem;
+    }
+    .photo-credit a {
+      color: #00b4d8;
+    }
+    .rightbar h3 {
+      color: #00b4d8;
+    }
+    .explore-item {
+      margin-bottom: 1rem;
+      background-color: rgba(36, 59, 85, 0.35);
+      padding: 0.5rem;
+      border-left: 3px solid #00b4d8;
+      border-radius: 5px;
+    }
+    .search-bar {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .search-bar input {
+      padding: 0.5rem;
+      width: 70%;
+      max-width: 400px;
+      border-radius: 5px;
+      border: none;
+    }
+    footer {
+      background-color: rgba(27, 38, 59, 0.35);
+      text-align: center;
+      padding: 1rem;
+      color: #aaa;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>🌊 Ocean Research & Exploration Portal</h1>
+  <div class="subheading">Organised & maintained for oceanographic research and outreach</div>
+  <div class="managed-by">🧑‍💻 Managed by Gobardhan Bhoi, MSc Student, IIT Bhubaneswar</div>
+  <div class="container">
+    <div class="sidebar">
+      <h3>🔐 Access</h3>
+      <a href="/login" class="button">Student Login</a>
+      <a href="/register" class="button">Register</a>
+      <a href="/admin" class="button">Admin View</a>
+      <div class="section">
+        <h2>📄 Recent Research Uploads</h2>
+        {% for item in submissions %}
+        <div class="card">
+          <strong>Title:</strong> {{ item.title }}<br/>
+          <strong>By:</strong> {{ item.user }}<br/>
+          <p>{{ item.abstract }}</p>
+        </div>
+        {% else %}
+        <p>No submissions yet.</p>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="main">
+      <div class="search-bar">
+        <form method="GET" action="/">
+          <input type="text" name="q" placeholder="Search by title, author, or keyword..." value="{{ request.args.get('q', '') }}">
+        </form>
+      </div>
+      <div class="section">
+        <h2>🌀 Live Ocean Map</h2>
+        <iframe src="https://earth.nullschool.net/#current/ocean/surface/currents/overlay=current" title="Earth Nullschool Ocean Currents"></iframe>
+      </div>
+    </div>
+    <div class="rightbar">
+      <h3>🌎 Ocean Explorations</h3>
+      <div class="explore-item">
+        <strong>Deepest Dive:</strong><br/> Mariana Trench – Challenger Deep
+      </div>
+      <div class="explore-item">
+        <strong>Bioluminescent Bays:</strong><br/> Mosquito Bay, Puerto Rico
+      </div>
+      <div class="explore-item">
+        <strong>Lost City Hydrothermal Field</strong><br/> Mid-Atlantic Ridge
+      </div>
+    </div>
+  </div>
+  <div class="photo-credit">
+    📸 Background photo by <a href="https://unsplash.com/@silasbaisch" target="_blank">Silas Baisch</a> on Unsplash
+  </div>
+  <footer>
+    &copy; All rights reserved.
+  </footer>
+</body>
+</html>

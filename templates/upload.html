@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Upload Research</title>
+  <style>
+    body {
+      background-color: #0d1b2a;
+      color: #ffffff;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 2rem;
+    }
+    .form-box {
+      background-color: #112d4e;
+      padding: 2rem;
+      border-radius: 10px;
+      display: inline-block;
+    }
+    input, textarea, button {
+      padding: 0.7rem;
+      margin: 0.5rem;
+      width: 100%;
+      max-width: 500px;
+      border-radius: 5px;
+      border: none;
+    }
+    input, textarea {
+      background-color: #1b263b;
+      color: #fff;
+    }
+    button {
+      background-color: #00b4d8;
+      color: #0d1b2a;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h2>📤 Upload Your Research</h2>
+  <div class="form-box">
+    <form method="POST" enctype="multipart/form-data">
+      <input type="text" name="title" placeholder="Title of your research" required><br/>
+      <textarea name="abstract" placeholder="Abstract or short description" rows="4" required></textarea><br/>
+      <input type="file" name="file" required><br/>
+      <button type="submit">Upload</button>
+    </form>
+  </div>
+</body>
+</html>
