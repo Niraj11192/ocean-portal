@@ -1,73 +1,80 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, session, url_for
 import os
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'  # Change this for production!
+app.secret_key = 'supersecretkey'
 UPLOAD_FOLDER = 'uploads'
-ALLOWED_EXTENSIONS = {'pdf', 'png', 'jpg', 'jpeg'}
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-# Dummy users and uploads (for now)
+# Store users and submissions
 users = {'gobardhan': '1234'}
 submissions = []
 
-# Check file type
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
 @app.route('/')
 def index():
-    return render_template('index.html')
+    query = request.args.get('q', '').lower()
+    if query:
+        filtered = [s for s in submissions if query in s['title'].lower() or query in s['abstract'].lower() or query in s['user'].lower()]
+    else:
+        filtered = submissions
+    return render_template('index.html', submissions=filtered)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         uname = request.form['username']
-        pw = request.form['password']
-        if uname in users and users[uname] == pw:
-            session['username'] = uname
-            return redirect(url_for('dashboard'))
-        else:
-            flash('Invalid credentials')
+        pwd = request.form['password']
+        if uname in users and users[uname] == pwd:
+            session['user'] = uname
+            return redirect('/upload')
+        return "Invalid credentials!"
     return render_template('login.html')
 
-@app.route('/dashboard', methods=['GET', 'POST'])
-def dashboard():
-    if 'username' not in session:
-        return redirect(url_for('login'))
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        uname = request.form['username']
+        pwd = request.form['password']
+        if uname in users:
+            return "User already exists!"
+        users[uname] = pwd
+        return redirect('/login')
+    return render_template('register.html')
 
+@app.route('/upload', methods=['GET', 'POST'])
+def upload():
+    if 'user' not in session:
+        return redirect('/login')
     if request.method == 'POST':
         title = request.form['title']
         abstract = request.form['abstract']
         file = request.files['file']
-        if file and allowed_file(file.filename):
+        if file:
             filename = secure_filename(file.filename)
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(filepath)
+            path = os.path.join(UPLOAD_FOLDER, filename)
+            file.save(path)
             submissions.append({
-                'user': session['username'],
                 'title': title,
                 'abstract': abstract,
-                'filename': filename
+                'filename': filename,
+                'user': session['user']
             })
-            flash('Your research has been submitted for review!')
-        else:
-            flash('Invalid file type.')
-
-    return render_template('dashboard.html', submissions=submissions)
+            return redirect('/')
+    return render_template('upload.html')
 
 @app.route('/admin')
 def admin():
     return render_template('admin.html', submissions=submissions)
 
+@app.route('/download/<filename>')
+def download(filename):
+    return redirect(url_for('static', filename=f'../uploads/{filename}'))
+
 @app.route('/logout')
 def logout():
-    session.pop('username', None)
-    return redirect(url_for('index'))
-
+    session.pop('user', None)
+    return redirect('/')
+    
 if __name__ == '__main__':
-    if not os.path.exists(UPLOAD_FOLDER):
-        os.makedirs(UPLOAD_FOLDER)
     app.run(debug=True)
